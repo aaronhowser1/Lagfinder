@@ -32,9 +32,11 @@ fun main() {
 
 fun printLaggiestLines(lines: List<String>, laggyLines: List<Pair<Int, Long>>) {
 
-    val sortedList = laggyLines.sortedBy { (_,value) -> value}.reversed()
+    val sortedList = getLaggiestLineIndices(laggyLines)
 
     val howMany = inputFromPrompt("How many do you wish to print?").toInt()
+
+    println("Printing $howMany laggiest lines")
 
     for (i in 0 until howMany) {
 
@@ -48,12 +50,14 @@ fun printLaggiestLines(lines: List<String>, laggyLines: List<Pair<Int, Long>>) {
 
             """.trimIndent())
     }
-
-
 }
 
 fun printLaggyLines(lines: List<String>, laggyLines: List<Pair<Int, Long>>) {
-    for ((index, interval) in laggyLines) {
+
+    println("Printing all laggy lines, in order of lag")
+
+    val sortedLaggyLines = getLaggiestLineIndices(laggyLines)
+    for ((index, interval) in sortedLaggyLines) {
             println("""
                 The time between line $index and line ${index+1} was $interval ms
                 Line $index: ${lines[index]}
@@ -61,6 +65,10 @@ fun printLaggyLines(lines: List<String>, laggyLines: List<Pair<Int, Long>>) {
 
             """.trimIndent())
     }
+}
+
+fun getLaggiestLineIndices(lines: List<Pair<Int, Long>>): List<Pair<Int, Long>> {
+    return lines.sortedBy { (_,value) -> value}.reversed()
 }
 
 fun getLinesWithLag(lines: List<String>, minNotableTime: Int): List<Pair<Int, Long>> {
