@@ -23,14 +23,36 @@ fun main() {
 
     when (readln()) {
         "1" -> printLaggyLines(lines, laggyLines)
-
+        else -> printLaggiestLines(lines, laggyLines)
     }
 
 
 
 }
 
-fun printLaggyLines(lines: List<String>, laggyLines: Map<Int, Long>) {
+fun printLaggiestLines(lines: List<String>, laggyLines: List<Pair<Int, Long>>) {
+
+    val sortedList = laggyLines.sortedBy { (_,value) -> value}.reversed()
+
+    val howMany = inputFromPrompt("How many do you wish to print?").toInt()
+
+    for (i in 0 until howMany) {
+
+        if (i >= sortedList.size) break
+
+        val (index, interval) = sortedList[i]
+        println("""
+                The time between line $index and line ${index+1} was $interval ms
+                Line $index: ${lines[index]}
+                Line ${index+1}: ${lines[index+1]}
+
+            """.trimIndent())
+    }
+
+
+}
+
+fun printLaggyLines(lines: List<String>, laggyLines: List<Pair<Int, Long>>) {
     for ((index, interval) in laggyLines) {
             println("""
                 The time between line $index and line ${index+1} was $interval ms
@@ -41,9 +63,9 @@ fun printLaggyLines(lines: List<String>, laggyLines: Map<Int, Long>) {
     }
 }
 
-fun getLinesWithLag(lines: List<String>, minNotableTime: Int): Map<Int, Long> {
+fun getLinesWithLag(lines: List<String>, minNotableTime: Int): List<Pair<Int, Long>> {
 
-    val laggyLines = mutableMapOf<Int, Long>()
+    val laggyLines = mutableListOf<Pair<Int,Long>>()
 
     for (i in lines.indices) {
         //Break if there isn't a next line
@@ -63,10 +85,10 @@ fun getLinesWithLag(lines: List<String>, minNotableTime: Int): Map<Int, Long> {
 
         val interval = firstLineTime.until(nextLineTime, ChronoUnit.MILLIS)
 
-        if (interval >= minNotableTime) laggyLines.put(i, interval)
+        if (interval >= minNotableTime) laggyLines.add(Pair(i, interval))
     }
 
-    return laggyLines.toMap()
+    return laggyLines
 
 }
 
